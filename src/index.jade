@@ -1,0 +1,237 @@
+!!! 5
+html
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1, maximum-scale=1')
+    title Decoupled Directives
+
+    //- Check out 'src/bower_components/prism/' for available themes
+    link(rel='stylesheet', type='text/css', href='bower_components/prism/prism-tomorrow.css')
+
+    link(rel='stylesheet', type='text/css', href='styles/main.css')
+
+  body
+
+    article
+
+      section
+        h1 Decoupled Directives
+
+      section
+        h2.bullet Another talk about directives?
+        p.bullet Sorry about that.
+        p.bullet (But they are the best part.)
+
+      section
+        code.language-javascript.bullet
+          pre.
+            .directive('myDirective', function() {
+              return {
+                // ...
+                scope: {
+                  'value': '=ngModel',
+                  'minValue': '@',
+                  'slideStart': '&'
+                },
+                //...
+              }
+            }
+        hr
+        h3.bullet What the fudge does it mean?
+
+
+      section
+        h2.bullet Huh? Scope
+        hr
+        p.
+          Is related, but <strong>not</strong> the same as $scope.
+        hr
+        ul
+          li But it has lots of smarts built in...
+          li To makes directives reusable...
+          li By making the coupling <strong>declarative</strong>.
+
+      section(data-bespoke-state='emphatic')
+        h2 Example!
+        p.
+          Let's make a slider UI widget.
+
+      section
+        h2.bullet Start with some boilerplate (Coffeescript from now)
+        hr
+        code.language-coffeescript
+          pre.
+            .directive 'slider', () ->
+              template: """
+                <div class="slider">
+                  <div class="nib"></div>
+                </div>
+              """
+              scope:
+                value: '=ngModel'
+              replace: true
+              restrict: 'E'
+              link: ($scope, $element, $attrs) ->
+                return
+
+      section
+        h2 Usage in view
+        code.language-markup
+          pre.
+            <slider ng-model="digits"></slider>
+        hr
+        h3 Bidirectional binding: <br/>$scope.value in directive &lt;=&gt; digits in view
+        h3 Happens due to { value: '=ngModel' }
+
+      section
+        h2.bullet Make it reflect a value
+        hr
+        code.language-markup
+          pre.
+            <div class="slider">
+              <div class="nib"
+                   ng-style="nibStyle()">
+              </div>
+            </div>
+        hr
+        code.language-coffeescript
+          pre.
+            link: ($scope, $element, $attrs) ->
+              $scope.nibStyle = () ->
+                value = parseFloatDefault $scope.value, 0
+
+                proportion = clamp(value, 0, 1)
+                return {
+                    marginLeft: "\#{100 * proportion}%"
+                }
+
+      section
+        h2.bullet Make it move
+        hr
+        code.language-markup
+          pre.
+            <div class="slider">
+              <div class="nib" ng-style="nibStyle()"
+                   ng-mousedown="startSliding($event)">
+              </div>
+            </div>
+        hr
+        code.language-coffeescript
+          pre.
+            $scope.startSliding = (event) ->
+              sliding = true
+
+            angular.element(document)
+            .bind 'mousemove', (event) ->
+              return if not sliding
+
+              # ... calculate new value ...
+
+              $scope.$apply () ->
+                  $scope.value = newValue
+
+            .bind 'mouseup', () ->
+                sliding = false
+
+      section
+        h2.bullet The cool bit: adding options
+        hr.
+        code.language-coffeescript
+          pre.
+            scope:
+              value: '=ngModel'
+              minValue: '@'
+              maxValue: '@'
+        hr.
+        code.language-markup
+          pre.
+            <slider ng-model="digits"
+                    min-value="0"
+                    max-value="100">
+            </slider>
+        hr
+        h3.
+          Sets $scope.minValue to min-value attribute
+
+      section
+        h2.bullet The options can be expressions!
+        hr.
+        code.language-markup
+          pre.
+            <slider ng-model="digits"
+                    min-value="{{min}}"
+                    max-value="{{max}}">
+            </slider>
+
+      section
+        h2.bullet So what?
+        hr.
+          You can do that with a controller easily enough.
+
+      section
+        h2.bullet Yo Dawg.
+        hr.
+        code.language-markup
+          pre.
+            <slider ng-model="digits"
+                    min-value="{{min}}"
+                    max-value="{{max}}">
+            </slider>
+            <slider ng-model="min"
+                    min-value="-100"
+                    max-value="{{max}}">
+            </slider>
+            <slider ng-model="max"
+                    min-value="{{min}}"
+                    max-value="100">
+            </slider>
+
+      section
+        h2.bullet & to finish off
+        p.bullet.
+          Get it?
+        h3.bullet.
+          Publish a function to scope.
+
+      section
+        code.language-coffeescript
+          pre.
+            scope:
+              # ...
+              slideStart: '&'
+              slideStop: '&'
+        hr
+        code.language-markup
+          pre.
+            <slider ng-model="digits"
+                    slide-start="isSliding = true"
+                    slide-stop="isSliding = false">
+            </slider>
+        hr
+        code.language-coffeescript
+          pre.
+            $scope.startSliding = (event) ->
+              # ...
+              $scope.slideStart()
+
+            $document.bind 'mouseup', () ->
+              # ...
+              $scope.$apply () ->
+                $scope.slideStop()
+
+      section
+        h2.bullet Recap
+        ul
+          li '=' sets up two-way data binding
+          li '@' sets up one-way expression evaluation
+          li '&' sets up functions you can call
+        hr
+        h3.bullet Questions?
+
+    script(src='bower_components/bespoke.js/dist/bespoke.min.js')
+    script(src='bower_components/bespoke-bullets/dist/bespoke-bullets.min.js')
+    script(src='bower_components/bespoke-hash/dist/bespoke-hash.min.js')
+    script(src='bower_components/bespoke-state/dist/bespoke-state.min.js')
+    script(src='bower_components/prism/prism.js')
+    script(src='bower_components/prism/components/prism-coffeescript.js')
+    script(src='scripts/main.js')
