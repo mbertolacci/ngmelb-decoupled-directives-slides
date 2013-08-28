@@ -225,8 +225,58 @@ html
                 $scope.slideStop()
 
       section
-        h2.bullet Recap
-        h3.bullet Scope is like the function signature for your directive.
+        h2 And in the view...
+        hr
+        code.language-markup
+          pre.
+            <img src="slide.gif" ng-show="isSliding" />
+        hr
+
+      section
+        h2 You can also get a value out of the function bound with &amp;
+        code.language-markup
+          pre.
+            <slider ng-model="digits"
+                    min-value="{{min}}"
+                    max-value="{{max}}"
+                    scale-value="log(value)"
+                    scale-proportion="exp(proportion)">
+            </slider>
+        hr
+        code.language-coffeescript
+          pre.
+            newValue = $scope.scaleProportion({
+              proportion: newProportion
+            })
+            # ...
+            newProportion = $scope.scaleValue({
+              value: newValue
+            })
+
+      section
+        h2 Recap: the main parts
+        hr
+        h3 Scope is like a function signature
+        hr
+        code.language-coffeescript
+          pre.
+            scope:
+              value: '=ngModel'
+              minValue: '@'
+              maxValue: '@'
+              slideStart: '&'
+              slideStop: '&'
+        hr
+        code.language-markup
+          pre.
+            <slider ng-model="digits"
+                    min-value="{{min}}"
+                    max-value="{{max}}"
+                    slide-start="isSliding = true"
+                    slide-stop="isSliding = false">
+            </slider>            
+
+      section
         ul
           li '=' sets up two-way data binding
           li '@' sets up one-way expression evaluation
