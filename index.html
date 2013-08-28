@@ -61,7 +61,8 @@ angular.element(document)
 </h3></section><section><h2 class="bullet">The options can be expressions!</h2><hr><code class="language-markup"><pre>&lt;slider ng-model=&quot;digits&quot;
         min-value=&quot;{{min}}&quot;
         max-value=&quot;{{max}}&quot;&gt;
-&lt;/slider&gt;
+&lt;/slider&gt;</pre></code><hr><code class="language-markup"><pre>&lt;input type=&quot;text&quot; ng-model=&quot;max&quot;/&gt;
+&lt;input type=&quot;text&quot; ng-model=&quot;min&quot;/&gt;
 </pre></code></section><section><h2 class="bullet">So what?</h2><hr></section><section><h2 class="bullet">Yo Dawg.</h2><hr><code class="language-markup"><pre>&lt;slider ng-model=&quot;digits&quot;
         min-value=&quot;{{min}}&quot;
         max-value=&quot;{{max}}&quot;&gt;
@@ -89,4 +90,27 @@ $document.bind 'mouseup', () -&gt;
   # ...
   $scope.$apply () -&gt;
     $scope.slideStop()
-    </pre></code></section><section><h2 class="bullet">Recap</h2><h3 class="bullet">Scope is like the function signature for your directive.</h3><ul><li>'=' sets up two-way data binding</li><li>'@' sets up one-way expression evaluation</li><li>'&' sets up functions you can call</li></ul><hr><h3 class="bullet">Questions?</h3></section></article><script src="bower_components/bespoke.js/dist/bespoke.min.js"></script><script src="bower_components/bespoke-bullets/dist/bespoke-bullets.min.js"></script><script src="bower_components/bespoke-hash/dist/bespoke-hash.min.js"></script><script src="bower_components/bespoke-state/dist/bespoke-state.min.js"></script><script src="bower_components/prism/prism.js"></script><script src="bower_components/prism/components/prism-coffeescript.js"></script><script src="scripts/main.js"></script></body></html>
+    </pre></code></section><section><h2>And in the view...</h2><hr><code class="language-markup"><pre>&lt;img src=&quot;slide.gif&quot; ng-show=&quot;isSliding&quot; /&gt;</pre></code><hr></section><section><h2>You can also get a value out of the function bound with &amp;</h2><code class="language-markup"><pre>&lt;slider ng-model=&quot;digits&quot;
+        min-value=&quot;{{min}}&quot;
+        max-value=&quot;{{max}}&quot;
+        scale-value=&quot;log(value)&quot;
+        scale-proportion=&quot;exp(proportion)&quot;&gt;
+&lt;/slider&gt;</pre></code><hr><code class="language-coffeescript"><pre>newValue = $scope.scaleProportion({
+  proportion: newProportion
+})
+# ...
+newProportion = $scope.scaleValue({
+  value: newValue
+})
+</pre></code></section><section><h2>Recap: the main parts</h2><hr><h3>Scope is like a function signature</h3><hr><code class="language-coffeescript"><pre>scope:
+  value: '=ngModel'
+  minValue: '@'
+  maxValue: '@'
+  slideStart: '&amp;'
+  slideStop: '&amp;'</pre></code><hr><code class="language-markup"><pre>&lt;slider ng-model=&quot;digits&quot;
+        min-value=&quot;{{min}}&quot;
+        max-value=&quot;{{max}}&quot;
+        slide-start=&quot;isSliding = true&quot;
+        slide-stop=&quot;isSliding = false&quot;&gt;
+&lt;/slider&gt;            
+</pre></code></section><section><ul><li>'=' sets up two-way data binding</li><li>'@' sets up one-way expression evaluation</li><li>'&' sets up functions you can call</li></ul><hr><h3 class="bullet">Questions?</h3></section></article><script src="bower_components/bespoke.js/dist/bespoke.min.js"></script><script src="bower_components/bespoke-bullets/dist/bespoke-bullets.min.js"></script><script src="bower_components/bespoke-hash/dist/bespoke-hash.min.js"></script><script src="bower_components/bespoke-state/dist/bespoke-state.min.js"></script><script src="bower_components/prism/prism.js"></script><script src="bower_components/prism/components/prism-coffeescript.js"></script><script src="scripts/main.js"></script></body></html>
